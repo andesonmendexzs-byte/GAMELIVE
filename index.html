@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StreamPulse — Pro Studio v2</title>
+    <title>StreamPulse — Ultimate Studio App</title>
     <style>
         :root {
             --bg-color: #070510;
@@ -16,26 +16,32 @@
             --text-main: #f3f4f6;
             --text-muted: #9ca3af;
             --danger: #ef4444;
+            --success: #10b981;
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', system-ui, sans-serif;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
             -webkit-tap-highlight-color: transparent;
         }
 
         body {
             background-color: var(--bg-color);
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
             color: var(--text-main);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            transition: all 0.3s;
         }
 
         header {
-            background: rgba(18, 14, 38, 0.95);
+            background: rgba(18, 14, 38, 0.85);
+            backdrop-filter: blur(10px);
             border-bottom: 1px solid var(--card-border);
             padding: 14px 16px;
             display: flex;
@@ -46,37 +52,81 @@
             z-index: 100;
         }
 
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-cyan));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            box-shadow: 0 0 20px rgba(139, 92, 246, 0.4);
+        }
+
         .logo-title h1 {
             font-size: 18px;
             font-weight: 800;
-            color: var(--accent-cyan);
+            background: linear-gradient(to right, #fff, var(--accent-cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .logo-title span {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .user-badge {
+            background: rgba(139, 92, 246, 0.15);
+            border: 1px solid var(--accent-purple);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            color: #d8b4fe;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
 
         .nav-tabs {
             display: flex;
-            background: #120e26;
-            border-bottom: 1px solid var(--card-border);
-            padding: 4px;
-            gap: 4px;
+            background: rgba(18, 14, 38, 0.9);
+            backdrop-filter: blur(8px);
             overflow-x: auto;
+            border-bottom: 1px solid var(--card-border);
+            padding: 0 8px;
+            scrollbar-width: none;
+        }
+
+        .nav-tabs::-webkit-scrollbar {
+            display: none;
         }
 
         .tab-btn {
-            background: #090614;
-            border: 1px solid var(--card-border);
+            background: none;
+            border: none;
             color: var(--text-muted);
-            padding: 10px 12px;
-            font-size: 12px;
+            padding: 14px 14px;
+            font-size: 13px;
             font-weight: 700;
-            border-radius: 8px;
             cursor: pointer;
             white-space: nowrap;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s;
         }
 
         .tab-btn.active {
-            color: #fff;
-            background: var(--accent-purple);
-            border-color: var(--accent-purple);
+            color: var(--accent-cyan);
+            border-bottom-color: var(--accent-cyan);
         }
 
         main {
@@ -94,20 +144,30 @@
 
         .tab-content.active {
             display: block;
+            animation: slideUp 0.25s ease-out;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .card {
-            background: var(--card-bg);
+            background: rgba(18, 14, 38, 0.85);
+            backdrop-filter: blur(12px);
             border: 1px solid var(--card-border);
             border-radius: 16px;
-            padding: 16px;
+            padding: 18px;
             margin-bottom: 16px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
         }
 
         .card h3 {
-            font-size: 15px;
-            margin-bottom: 12px;
-            color: var(--accent-cyan);
+            font-size: 16px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .form-group {
@@ -116,34 +176,337 @@
 
         label {
             display: block;
-            font-size: 11px;
+            font-size: 12px;
             color: var(--text-muted);
-            margin-bottom: 4px;
+            margin-bottom: 6px;
             font-weight: 600;
         }
 
-        input {
+        input, textarea, select {
             width: 100%;
             background: #090614;
             border: 1px solid var(--card-border);
-            border-radius: 8px;
-            padding: 10px;
+            border-radius: 10px;
+            padding: 12px;
             color: var(--text-main);
-            font-size: 13px;
+            font-size: 14px;
             outline: none;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            border-color: var(--accent-cyan);
         }
 
         .btn {
             background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
             color: white;
             border: none;
-            border-radius: 8px;
-            padding: 12px;
-            font-size: 13px;
+            border-radius: 10px;
+            padding: 12px 16px;
+            font-size: 14px;
             font-weight: 700;
             cursor: pointer;
             width: 100%;
-            margin-top: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: transform 0.1s, opacity 0.2s;
+            text-decoration: none;
         }
 
-        .btn-pink { background: linear-gradient(135deg, var(--accent-purple), var(--accent-
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .btn-cyan {
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
+        }
+
+        .btn-pink {
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-pink));
+        }
+
+        .btn-danger {
+            background: var(--danger);
+        }
+
+        .grid-2x2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 12px;
+        }
+
+        .fx-card {
+            background: #090614;
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 16px 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .fx-card.active {
+            border-color: var(--accent-cyan);
+            background: rgba(6, 182, 212, 0.12);
+            box-shadow: 0 0 15px rgba(6, 182, 212, 0.2);
+        }
+
+        .fx-card .icon {
+            font-size: 28px;
+            margin-bottom: 6px;
+        }
+
+        .fx-card .title {
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .footer {
+            text-align: center;
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo-area">
+            <div class="logo-icon">⚡</div>
+            <div class="logo-title">
+                <h1 id="appHeaderTitle">StreamPulse</h1>
+                <span id="appHeaderSubtitle">v8.0 ADM FX Master</span>
+            </div>
+        </div>
+        <div class="user-badge" onclick="openTab('adm', null)">
+            ⚙️ <span id="headerProfileName">ADM Full</span>
+        </div>
+    </header>
+
+    <nav class="nav-tabs">
+        <button class="tab-btn active" onclick="openTab('voice', this)">🎤 Voz FX</button>
+        <button class="tab-btn" onclick="openTab('sfx', this)">🔊 Sons</button>
+        <button class="tab-btn" onclick="openTab('ai', this)">🤖 IA Co-Piloto</button>
+        <button class="tab-btn" onclick="openTab('adm', this)" style="color: var(--accent-pink);">⚙️ ADM Editor Total</button>
+    </nav>
+
+    <main>
+        <!-- 1. VOZ FX -->
+        <div id="voice" class="tab-content active">
+            <div class="card">
+                <h3>🎤 Modificador de Voz em Tempo Real</h3>
+                <button class="btn" id="micToggleBtn" onclick="toggleMic()">🔴 Ativar Microfone</button>
+
+                <div class="grid-2x2" style="margin-top: 14px;">
+                    <div class="fx-card active" onclick="selectVoiceFx('normal', this)">
+                        <div class="icon" id="iconVoiceNormal">🗣️</div>
+                        <div class="title" id="lblVoiceNormal">Voz Normal</div>
+                    </div>
+                    <div class="fx-card" onclick="selectVoiceFx('monster', this)">
+                        <div class="icon" id="iconVoiceMonster">👹</div>
+                        <div class="title" id="lblVoiceMonster">Voz Grave</div>
+                    </div>
+                    <div class="fx-card" onclick="selectVoiceFx('squirrel', this)">
+                        <div class="icon" id="iconVoiceSquirrel">🐿️</div>
+                        <div class="title" id="lblVoiceSquirrel">Voz Fina</div>
+                    </div>
+                    <div class="fx-card" onclick="selectVoiceFx('robot', this)">
+                        <div class="icon" id="iconVoiceRobot">🤖</div>
+                        <div class="title" id="lblVoiceRobot">Voz Robô</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. SONS -->
+        <div id="sfx" class="tab-content">
+            <div class="card">
+                <h3>🔊 Mesa de Efeitos Sonoros</h3>
+                <div class="grid-2x2">
+                    <div class="fx-card" onclick="triggerSFX('sfx1')">
+                        <div class="icon" id="iconSfx1">📢</div>
+                        <div class="title" id="lblSfx1">Efeito 1</div>
+                    </div>
+                    <div class="fx-card" onclick="triggerSFX('sfx2')">
+                        <div class="icon" id="iconSfx2">👏</div>
+                        <div class="title" id="lblSfx2">Efeito 2</div>
+                    </div>
+                    <div class="fx-card" onclick="triggerSFX('sfx3')">
+                        <div class="icon" id="iconSfx3">🪄</div>
+                        <div class="title" id="lblSfx3">Efeito 3</div>
+                    </div>
+                    <div class="fx-card" onclick="triggerSFX('sfx4')">
+                        <div class="icon" id="iconSfx4">🥁</div>
+                        <div class="title" id="lblSfx4">Efeito 4</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. IA -->
+        <div id="ai" class="tab-content">
+            <div class="card">
+                <h3>🤖 Assistente de Live</h3>
+                <div class="chat-output" id="aiChatBox" style="background:#090614; border:1px solid var(--card-border); border-radius:12px; height:200px; padding:12px; margin-bottom:12px; overflow-y:auto;">
+                    <div class="msg-bubble bot" id="dispAiWelcome">Olá Streamer! Como posso ajudar?</div>
+                </div>
+                <div class="form-group">
+                    <input type="text" id="aiInput" placeholder="Faz uma pergunta à IA...">
+                </div>
+                <button class="btn btn-cyan" onclick="sendToAI()">✨ Enviar</button>
+            </div>
+        </div>
+
+        <!-- 4. ADM EDITOR TOTAL -->
+        <div id="adm" class="tab-content">
+            <div class="card">
+                <h3 style="color: var(--accent-pink);">⚙️ Painel ADM — Editar Todos os Efeitos & Nomes</h3>
+                <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 14px;">
+                    Modifica abaixo o nome e emoji de qualquer botão de efeito de voz ou som!
+                </p>
+
+                <!-- Editar Efeitos de Voz -->
+                <h4 style="font-size:13px; color:var(--accent-cyan); margin-bottom:8px;">🎤 Efeitos de Voz:</h4>
+                <div class="form-group">
+                    <label>Efeito Grave (Emoji e Nome)</label>
+                    <div style="display:flex; gap:6px;">
+                        <input type="text" id="admIconVoiceMonster" style="width:60px;" placeholder="👹">
+                        <input type="text" id="admLblVoiceMonster" placeholder="Nome ex: Monstro Subterrâneo">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Efeito Fino (Emoji e Nome)</label>
+                    <div style="display:flex; gap:6px;">
+                        <input type="text" id="admIconVoiceSquirrel" style="width:60px;" placeholder="🐿️">
+                        <input type="text" id="admLblVoiceSquirrel" placeholder="Nome ex: Voz Esquilo">
+                    </div>
+                </div>
+
+                <!-- Editar Efeitos Sonoros -->
+                <h4 style="font-size:13px; color:var(--accent-cyan); margin:12px 0 8px 0;">🔊 Efeitos Sonoros (Sons):</h4>
+                <div class="form-group">
+                    <label>Som 1 (Emoji, Nome e Frequência do Áudio Hz)</label>
+                    <div style="display:flex; gap:6px;">
+                        <input type="text" id="admIconSfx1" style="width:60px;" placeholder="📢">
+                        <input type="text" id="admLblSfx1" placeholder="Nome ex: Buzina Hype">
+                        <input type="number" id="admFreqSfx1" style="width:90px;" placeholder="Hz: 420">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Som 2 (Emoji, Nome e Frequência Hz)</label>
+                    <div style="display:flex; gap:6px;">
+                        <input type="text" id="admIconSfx2" style="width:60px;" placeholder="👏">
+                        <input type="text" id="admLblSfx2" placeholder="Nome ex: Aplausos">
+                        <input type="number" id="admFreqSfx2" style="width:90px;" placeholder="Hz: 300">
+                    </div>
+                </div>
+
+                <!-- Personalização Geral -->
+                <h4 style="font-size:13px; color:var(--accent-cyan); margin:12px 0 8px 0;">🎨 Aparência e Textos:</h4>
+                <div class="form-group">
+                    <label>Título do Aplicativo (Header)</label>
+                    <input type="text" id="admAppTitle" placeholder="Ex: StreamPulse Studio">
+                </div>
+                <div class="form-group">
+                    <label>Cor do Fundo (Hexadecimal) ou URL da Imagem</label>
+                    <input type="text" id="admBg" placeholder="Ex: #070510 ou link de imagem">
+                </div>
+
+                <button class="btn btn-pink" onclick="saveAdmSettings()" style="margin-top:10px;">💾 Salvar Tudo no ADM</button>
+                <button class="btn btn-danger" onclick="resetAdmSettings()" style="margin-top:8px;">🔄 Restaurar Padrões Originais</button>
+            </div>
+        </div>
+    </main>
+
+    <div class="footer">StreamPulse v8.0 • Edição Total via ADM</div>
+
+    <script>
+        function openTab(tabId, btn) {
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            if (btn) btn.classList.add('active');
+        }
+
+        function loadAdmSettings() {
+            const title = localStorage.getItem('sp_app_title') || 'StreamPulse';
+            document.getElementById('appHeaderTitle').innerText = title;
+            document.getElementById('admAppTitle').value = title;
+
+            const bg = localStorage.getItem('sp_bg_val');
+            if (bg) {
+                if (bg.startsWith('#')) {
+                    document.body.style.backgroundColor = bg;
+                    document.body.style.backgroundImage = 'none';
+                } else {
+                    document.body.style.backgroundImage = `url('${bg}')`;
+                }
+                document.getElementById('admBg').value = bg;
+            }
+
+            const vmIcon = localStorage.getItem('sp_vm_icon') || '👹';
+            const vmLbl = localStorage.getItem('sp_vm_lbl') || 'Voz Grave';
+            document.getElementById('iconVoiceMonster').innerText = vmIcon;
+            document.getElementById('lblVoiceMonster').innerText = vmLbl;
+            document.getElementById('admIconVoiceMonster').value = vmIcon;
+            document.getElementById('admLblVoiceMonster').value = vmLbl;
+
+            const vsIcon = localStorage.getItem('sp_vs_icon') || '🐿️';
+            const vsLbl = localStorage.getItem('sp_vs_lbl') || 'Voz Fina';
+            document.getElementById('iconVoiceSquirrel').innerText = vsIcon;
+            document.getElementById('lblVoiceSquirrel').innerText = vsLbl;
+            document.getElementById('admIconVoiceSquirrel').value = vsIcon;
+            document.getElementById('admLblVoiceSquirrel').value = vsLbl;
+
+            const s1Icon = localStorage.getItem('sp_s1_icon') || '📢';
+            const s1Lbl = localStorage.getItem('sp_s1_lbl') || 'Efeito 1';
+            const s1Freq = localStorage.getItem('sp_s1_freq') || '420';
+            document.getElementById('iconSfx1').innerText = s1Icon;
+            document.getElementById('lblSfx1').innerText = s1Lbl;
+            document.getElementById('admIconSfx1').value = s1Icon;
+            document.getElementById('admLblSfx1').value = s1Lbl;
+            document.getElementById('admFreqSfx1').value = s1Freq;
+
+            const s2Icon = localStorage.getItem('sp_s2_icon') || '👏';
+            const s2Lbl = localStorage.getItem('sp_s2_lbl') || 'Efeito 2';
+            const s2Freq = localStorage.getItem('sp_s2_freq') || '300';
+            document.getElementById('iconSfx2').innerText = s2Icon;
+            document.getElementById('lblSfx2').innerText = s2Lbl;
+            document.getElementById('admIconSfx2').value = s2Icon;
+            document.getElementById('admLblSfx2').value = s2Lbl;
+            document.getElementById('admFreqSfx2').value = s2Freq;
+        }
+
+        function saveAdmSettings() {
+            localStorage.setItem('sp_app_title', document.getElementById('admAppTitle').value.trim());
+            localStorage.setItem('sp_bg_val', document.getElementById('admBg').value.trim());
+
+            localStorage.setItem('sp_vm_icon', document.getElementById('admIconVoiceMonster').value.trim());
+            localStorage.setItem('sp_vm_lbl', document.getElementById('admLblVoiceMonster').value.trim());
+            localStorage.setItem('sp_vs_icon', document.getElementById('admIconVoiceSquirrel').value.trim());
+            localStorage.setItem('sp_vs_lbl', document.getElementById('admLblVoiceSquirrel').value.trim());
+
+            localStorage.setItem('sp_s1_icon', document.getElementById('admIconSfx1').value.trim());
+            localStorage.setItem('sp_s1_lbl', document.getElementById('admLblSfx1').value.trim());
+            localStorage.setItem('sp_s1_freq', document.getElementById('admFreqSfx1').value.trim());
+
+            localStorage.setItem('sp_s2_icon', document.getElementById('admIconSfx2').value.trim());
+            localStorage.setItem('sp_s2_lbl', document.getElementById('admLblSfx2').value.trim());
+            localStorage.setItem('sp_s2_freq', document.getElementById('admFreqSfx2').value.trim());
+
+            loadAdmSettings();
+            alert('🎉 Alterações salvas com sucesso!');
+        }
+
+        function resetAdmSettings() {
+            if (confirm('Restaurar definições originais?')) {
+                localStorage.clear();
+                location.reload();
+            }
+        }
+
+        let audioCtx, micStream, micSource, isMicOn = false;
